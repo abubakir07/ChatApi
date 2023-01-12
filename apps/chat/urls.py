@@ -16,4 +16,6 @@ urlpatterns = [
     path('chats/<int:pk>/', ChatDetailView.as_view(), name='get_chat'),
     path('chats/<int:pk>/update/', ChatUpdateView.as_view(), name='update_chat'),
     path('chats/<int:pk>/delete/', ChatDestroyView.as_view(), name='delete_chat'),
+
+    path('current-user/', CurrentUserView.as_view(), name='current_user'),
 ]

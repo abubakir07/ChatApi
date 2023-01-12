@@ -13,7 +13,8 @@ from rest_framework.response import Response
 
 from .models import Message, Chat
 from .serializer import MessageSerializer, ChatSerializer, CurrentUserSerializer
-from .permissions import IsOwner
+from .permissions import IsOwner, IsOwnerOrReadOnly
+from ..user.models import User
 
 
 class CreateMessageView(CreateAPIView):
@@ -34,13 +35,13 @@ class MessageListView(ListAPIView):
 
 class MessageDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = MessageSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     queryset = Message.objects.all()
 
 
 class MessageUpdateView(UpdateAPIView):
     serializer_class = MessageSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwner)
     queryset = Message.objects.all()
 
 
@@ -64,6 +65,7 @@ class CreateChatView(CreateAPIView):
 
 
 class ChatListView(ListAPIView):
+    queryset = Chat.objects.all()
     serializer_class = ChatSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -71,25 +73,26 @@ class ChatListView(ListAPIView):
         return Chat.objects.filter(participants=self.request.user)
 
 
-class ChatDetailView(RetrieveAPIView):
-    serializer_class = ChatSerializer
-    permission_classes = (IsAuthenticated,)
+class ChatDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
 
 class ChatUpdateView(UpdateAPIView):
-    serializer_class = ChatSerializer
-    permission_classes = (IsAuthenticated,)
     queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    permission_classes = (IsAuthenticated, IsOwner)
 
 
 class ChatDestroyView(DestroyAPIView):
-    serializer_class = ChatSerializer
-    permission_classes = (IsAuthenticated,)
     queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
+    permission_classes = (IsAuthenticated, IsOwner)
 
 
 class CurrentUserView(APIView):
+    queryset = User.objects.all()
     permission_classes = (IsAuthenticated,)
     serializer_class = CurrentUserSerializer
 

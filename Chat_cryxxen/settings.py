@@ -40,6 +40,7 @@ REQUIREMENTS = [
 LOCAL_APPS = [
     'apps.chat',
     'apps.user',
+
 ]
 
 INSTALLED_APPS = LOCAL_APPS + REQUIREMENTS + DJANGO_APPS

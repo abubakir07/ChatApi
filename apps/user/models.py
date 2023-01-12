@@ -33,6 +33,7 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
+    last_activity = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name = "user"
