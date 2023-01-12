@@ -1,6 +1,3 @@
-from .models import Message, Chat
-from .serializer import MessageSerializer, ChatSerializer
-
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import (
     CreateAPIView,
@@ -8,11 +5,19 @@ from rest_framework.generics import (
     RetrieveAPIView,
     DestroyAPIView,
     UpdateAPIView,
-    get_object_or_404
+    RetrieveUpdateDestroyAPIView,
+    get_object_or_404,
 )
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from .models import Message, Chat
+from .serializer import MessageSerializer, ChatSerializer, CurrentUserSerializer
+from .permissions import IsOwner
 
 
 class CreateMessageView(CreateAPIView):
+    queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -27,7 +32,7 @@ class MessageListView(ListAPIView):
         return Message.objects.filter(chat=chat)
 
 
-class MessageDetailView(RetrieveAPIView):
+class MessageDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = MessageSerializer
     permission_classes = (IsAuthenticated,)
     queryset = Message.objects.all()
@@ -41,20 +46,20 @@ class MessageUpdateView(UpdateAPIView):
 
 class MessageDestroyView(DestroyAPIView):
     serializer_class = MessageSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwner)
     queryset = Message.objects.all()
 
 
-################################################################################
-
-
 class CreateChatView(CreateAPIView):
+    queryset = Chat.objects.all()
     serializer_class = ChatSerializer
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
+        if not isinstance(self.get_serializer_class(), ChatSerializer):
+            raise ValueError("Incorrect serializer class specified")
         chat = serializer.save()
-        chat.participants.add(self.request.user)
+        chat.companion = self.request.user
         chat.save()
 
 
@@ -82,3 +87,12 @@ class ChatDestroyView(DestroyAPIView):
     serializer_class = ChatSerializer
     permission_classes = (IsAuthenticated,)
     queryset = Chat.objects.all()
+
+
+class CurrentUserView(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = CurrentUserSerializer
+
+    def get(self, request):
+        serializer = self.serializer_class(request.user)
+        return Response(serializer.data)
