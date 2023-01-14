@@ -31,10 +31,9 @@ DJANGO_APPS = [
 REQUIREMENTS = [
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework_swagger',
-    'django_filters',
     'corsheaders',
     'django',
+    'drf_yasg',
 ]
 
 LOCAL_APPS = [
@@ -63,7 +62,7 @@ ROOT_URLCONF = 'Chat_cryxxen.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,8 +143,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': False,

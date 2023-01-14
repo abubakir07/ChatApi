@@ -1,21 +1,23 @@
 from django.urls import path
 
-from .views import *
+from apps.chat.views import (
+    CreateMessageView,
+    MessageListView,
+    MessageDetailView,
+    ChatListView,
+    CreateChatView,
+    ChatDetailView
+)
+
 
 urlpatterns = [
     # For Messages
-    path('chats/<int:chat_id>/messages/', MessageListView.as_view(), name='get_messages'),
-    path('chats/<int:chat_id>/messages/create/', CreateMessageView.as_view(), name='create_message'),
-    path('chats/<int:chat_id>/messages/<int:pk>/', MessageDetailView.as_view(), name='get_message'),
-    path('chats/<int:chat_id>/messages/<int:pk>/update/', MessageUpdateView.as_view(), name='update_message'),
-    path('chats/<int:chat_id>/messages/<int:pk>/delete/', MessageDestroyView.as_view(), name='delete_message'),
+    path('<int:chat_id>/messages/', MessageListView.as_view(), name='get_messages'),
+    path('<int:chat_id>/message/create/', CreateMessageView.as_view(), name='create_message'),
+    path('<int:chat_id>/message/<int:pk>/', MessageDetailView.as_view(), name='detail_message'),
 
     # For Chat
-    path('chats/', ChatListView.as_view(), name='get_chats'),
-    path('chats/create/', CreateChatView.as_view(), name='create_chat'),
-    path('chats/<int:pk>/', ChatDetailView.as_view(), name='get_chat'),
-    path('chats/<int:pk>/update/', ChatUpdateView.as_view(), name='update_chat'),
-    path('chats/<int:pk>/delete/', ChatDestroyView.as_view(), name='delete_chat'),
-
-    path('current-user/', CurrentUserView.as_view(), name='current_user'),
+    path('list/', ChatListView.as_view(), name='get_chats'),
+    path('create/', CreateChatView.as_view(), name='create_chat'),
+    path('<int:pk>/', ChatDetailView.as_view(), name='detail_chat'),
 ]
