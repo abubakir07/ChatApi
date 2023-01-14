@@ -45,13 +45,6 @@ class UsersAnotherView(APIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    # def get(self, request):
-    #     chats = Chat.objects.filter(sender=request.user) | Chat.objects.filter(receiver=request.user)
-    #     user_ids = list(chats.values_list('sender', flat=True)) + list(chats.values_list('receiver', flat=True))
-    #     user_ids.append(request.user.id)
-    #     users = User.objects.exclude(id__in=user_ids)
-    #     serializer = self.serializer_class(users, many=True)
-    #     return Response(serializer.data)
 
 
 class CurrentUserView(APIView):
